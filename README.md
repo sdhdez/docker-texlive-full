@@ -4,9 +4,16 @@ Docker image with full Tex Live installation.
 
 Pull from [here](https://hub.docker.com/r/sdavidhdez/texlive-full/)
 
+## Clone
+
+```sh
+git clone https://github.com/sdhdez/docker-texlive-full.git
+```
+
 ## Build
 
 ```
+cd docker-texlive-full/docker
 sudo docker build -t sdavidhdez/texlive-full:latest ./
 ```
 
