@@ -1,6 +1,6 @@
 # docker-texlive-full
 
-Docker image with full Tex Live installation.
+Docker image with full Tex Live installation. Pull from [here](https://hub.docker.com/r/sdavidhdez/texlive-full/)
 
 ## Build
 
