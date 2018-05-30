@@ -4,10 +4,15 @@ MAINTAINER Simon D. Hernandez <sdhdez.gh@totum.one>
 # Tex Live
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            texlive-full
+            texlive-full && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/tmp/*
+
+# Extras
 RUN apt-get install -y --no-install-recommends \
             vim \
             ccze
+
 # Clean
 RUN apt-get clean && \
     apt-get autoclean -y && \
