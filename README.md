@@ -44,7 +44,7 @@ Change the command if needed.
 
 ### Highlight output
 
-Sometimes is useful to highligth the output, add `ccze` to the command, for example.
+To highligth the output add `ccze` in the command.
 
 ```sh
 function lmk {
