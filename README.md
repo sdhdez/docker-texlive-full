@@ -2,7 +2,7 @@
 
 Docker image with full Tex Live installation. 
 
-Pull from [here](https://hub.docker.com/r/sdavidhdez/texlive-full/)
+Pull from [here](https://hub.docker.com/r/sdavidhdez/texlive-full/).
 
 ## Usage
 
