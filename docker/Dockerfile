@@ -1,5 +1,5 @@
 FROM debian:testing
-MAINTAINER Simon D. Hernandez <sdhdez.gh@totum.one>
+MAINTAINER Simon D. Hernandez <sdhdez.gh.tl@totum.one>
 
 # Tex Live
 RUN apt-get update && \
