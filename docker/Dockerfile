@@ -9,9 +9,36 @@ RUN apt-get update && \
     rm -rf /tmp/* /var/tmp/*
 
 # Extras
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
             vim \
-            ccze
+            ccze \
+            git \
+            wget 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+            python3 \
+            python3-pip \
+            python-pip \
+            python3-wheel \
+            python-wheel \
+            python-setuptools \
+            python-dev \
+            python3-setuptools \
+            python3-dev \
+            fonts-powerline \
+            powerline \
+            python-powerline \
+            python3-powerline
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+            procps
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip2 1 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
 
 # Clean
 RUN apt-get clean && \
@@ -32,6 +59,45 @@ USER $user
 ENV USER=/home/$user
 ENV HOME=/home/$user
 ENV APP=/home/$user/doc
+
+# Powerline fonts
+RUN cd $HOME && \
+    git clone https://github.com/powerline/fonts.git --depth=1 && \
+    cd fonts && \
+    ./install.sh && \
+    mkdir -p ~/.config/fontconfig/conf.d && \
+    cd fontconfig/ && \
+    cp 50-enable-terminess-powerline.conf ~/.config/fontconfig/conf.d/ && \
+    cd ../.. && \
+    fc-cache -vf && \
+    rm -rf fonts
+
+RUN cd $HOME && \
+    wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf && \
+    wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf && \
+    mv PowerlineSymbols.otf $HOME/.local/share/fonts/ && \
+    fc-cache -vf $HOME/.local/share/fonts/ && \
+    mv 10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d/
+
+RUN cd $HOME && \
+    mkdir -p .bash/themes/agnoster-bash && \
+    git clone https://github.com/speedenator/agnoster-bash.git .bash/themes/agnoster-bash
+
+COPY config/vimrc /etc/vim/vimrc
+# Home
+COPY config/.bashrc $HOME/.bashrc
+COPY config/.gitconfig $HOME/.gitconfig
+COPY config/.vim $HOME/.vim
+COPY config/.vimrc $HOME/.vimrc
+
+USER root
+RUN chown $user:$user $HOME/.bashrc && \
+    chown $user:$user $HOME/.gitconfig && \
+    chown $user:$user -R $HOME/.vim && \
+    chown $user:$user $HOME/.vimrc && \
+    chown $user:$user $HOME/.local/share/fonts/PowerlineSymbols.otf && \
+    chown $user:$user $HOME/.config/fontconfig/conf.d/10-powerline-symbols.conf
+USER $user
 
 # Application
 RUN mkdir $APP
