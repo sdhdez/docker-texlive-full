@@ -45,3 +45,5 @@ let g:airline#extensions#tabline#enabled = 1
 " VimTex
 let g:vimtex_compiler_latexmk = {'callback' : 0}
 let g:vimtex_complete_recursive_bib = 1
+
+set t_Co=256

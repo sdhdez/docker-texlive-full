@@ -1,12 +1,37 @@
 FROM debian:testing
 MAINTAINER Simon D. Hernandez <sdhdez.gh.tl@totum.one>
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+            locales \
+            apt-utils \
+            multipath-tools && \
+    apt-get clean && \
+    apt-get autoclean -y && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/tmp/* && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# Set the locale
+COPY config/locale /etc/default/locale
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
 # Tex Live
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
             texlive-full && \
     apt-get clean && \
-    rm -rf /tmp/* /var/tmp/*
+    apt-get autoclean -y && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/tmp/* && \
+    rm -rf /var/lib/apt/lists/*
 
 # Extras
 RUN apt-get update && \
@@ -14,7 +39,15 @@ RUN apt-get update && \
             vim \
             ccze \
             git \
-            wget 
+            wget && \
+    apt-get clean && \
+    apt-get autoclean -y && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/tmp/* && \
+    rm -rf /var/lib/apt/lists/*
+
+# Python
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
             python3 \
@@ -29,24 +62,19 @@ RUN apt-get update && \
             fonts-powerline \
             powerline \
             python-powerline \
-            python3-powerline
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-            procps
-
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1 && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && \
-    update-alternatives --install /usr/bin/pip pip /usr/bin/pip2 1 && \
-    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
-
-# Clean
-RUN apt-get clean && \
+            python3-powerline \
+            procps && \
+    apt-get clean && \
     apt-get autoclean -y && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /tmp/* /var/tmp/* && \
     rm -rf /var/lib/apt/lists/*
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.6 2 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip2 1 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
 
 # User add
 ARG UID=1000
@@ -97,7 +125,15 @@ RUN chown $user:$user $HOME/.bashrc && \
     chown $user:$user $HOME/.vimrc && \
     chown $user:$user $HOME/.local/share/fonts/PowerlineSymbols.otf && \
     chown $user:$user $HOME/.config/fontconfig/conf.d/10-powerline-symbols.conf
+
 USER $user
+
+RUN cd $HOME/.vim/plugged/ale/ && git pull
+RUN cd $HOME/.vim/plugged/LaTeX-Box/ && git pull
+RUN cd $HOME/.vim/plugged/nerdtree/ && git pull
+RUN cd $HOME/.vim/plugged/vim-airline/ && git pull
+RUN cd $HOME/.vim/plugged/vim-airline-themes/ && git pull
+RUN cd $HOME/.vim/plugged/vim-fugitive/ && git pull
 
 # Application
 RUN mkdir $APP
